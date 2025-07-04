@@ -1,0 +1,40 @@
+disabled_rules:
+  - trailing_whitespace
+  - line_length
+  - file_length
+  - type_body_length
+  - function_body_length
+
+opt_in_rules:
+  - empty_count
+  - explicit_init
+  - first_where
+  - force_unwrapping
+  - implicit_return
+  - missing_docs
+  - unneeded_parentheses_in_closure_argument
+  - vertical_whitespace_between_cases
+
+excluded:
+  - Tests
+  - Sources/TesseractObjC
+  - .build
+  - DerivedData
+
+missing_docs:
+  warning: ["public"]
+
+identifier_name:
+  min_length: 2
+  max_length: 40
+
+type_name:
+  min_length: 3
+  max_length: 40
+
+force_cast: warning
+force_try: warning
+force_unwrapping: error
+
+vertical_whitespace:
+  max_empty_lines: 2

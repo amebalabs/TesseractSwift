@@ -1,0 +1,22 @@
+# Xcode
+.DS_Store
+/.build
+/Packages
+/*.xcodeproj
+xcuserdata/
+DerivedData/
+.swiftpm/config/registries.json
+.swiftpm/xcode/package.xcworkspace/contents.xcworkspacedata
+.netrc
+
+# Swift Package Manager
+.build/
+.swiftpm/
+
+# Temporary language data
+/tessdata/
+*.traineddata
+
+# But keep the binaries
+!/Binaries/**/*.xcframework
+!/Binaries/**/*.framework

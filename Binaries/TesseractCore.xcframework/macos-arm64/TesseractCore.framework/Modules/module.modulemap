@@ -1,0 +1,15 @@
+framework module TesseractCore {
+    umbrella header "TesseractCore.h"
+    
+    module tesseract {
+        header "tesseract/baseapi.h"
+        header "tesseract/capi.h"
+        header "tesseract/version.h"
+        export *
+    }
+    
+    export *
+    module * { export * }
+    
+    link "tesseract"
+}
