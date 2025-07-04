@@ -1,4 +1,7 @@
 // swift-tools-version: 5.9
+// Note: This package currently only supports ARM64 (Apple Silicon) architecture.
+// The binary XCFrameworks (TesseractCore, Leptonica) need to be rebuilt with
+// x86_64 slices to support Intel Macs.
 
 import PackageDescription
 

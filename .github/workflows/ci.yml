@@ -12,11 +12,9 @@ jobs:
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
-        os: [macos-14, macos-13]
-        xcode: ['15.2', '15.0']
-        exclude:
-          - os: macos-13
-            xcode: '15.2'
+        # Only test on macOS 14 (ARM64) since XCFrameworks only contain ARM64 binaries
+        os: [macos-14]
+        xcode: ['15.2']
     steps:
     - uses: actions/checkout@v4
     
