@@ -27,7 +27,7 @@
 #include "resultiterator.h"
 #include "unichar.h"
 
-#include <tesseract/version.h>
+#include "version.h"
 
 #include <cstdio>
 #include <vector> // for std::vector
