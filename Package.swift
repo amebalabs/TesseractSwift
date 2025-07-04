@@ -12,7 +12,7 @@ let package = Package(
         .library(
             name: "TesseractSwift",
             targets: ["TesseractSwift"]
-        ),
+        )
     ],
     dependencies: [],
     targets: [
@@ -23,7 +23,7 @@ let package = Package(
             publicHeadersPath: "include",
             cxxSettings: [
                 .headerSearchPath("include"),
-                .define("TESS_EXPORTS"),
+                .define("TESS_EXPORTS")
             ],
             linkerSettings: [
                 .linkedLibrary("curl"),
@@ -49,7 +49,7 @@ let package = Package(
             resources: [
                 .process("Resources")
             ]
-        ),
+        )
     ],
     cxxLanguageStandard: .cxx17
 )

@@ -111,6 +111,12 @@ public class TesseractEngine {
         bridge.cleanup()
     }
     
+    /// Initializes the Tesseract engine with the specified language.
+    /// 
+    /// - Parameter language: The language code (e.g., "eng" for English, "fra" for French).
+    ///   Multiple languages can be specified with "+" separator (e.g., "eng+fra").
+    /// - Throws: `TesseractError.dataPathNotFound` if the tessdata directory doesn't exist.
+    ///   `TesseractError.initializationFailed` if initialization fails.
     public func initialize(language: String = "eng") throws {
         guard FileManager.default.fileExists(atPath: dataPath) else {
             throw TesseractError.dataPathNotFound
@@ -123,10 +129,24 @@ public class TesseractEngine {
         currentLanguage = language
     }
     
+    /// Sets the page segmentation mode for recognition.
+    /// 
+    /// - Parameter mode: The segmentation mode to use. Default is `.auto`.
     public func setPageSegmentationMode(_ mode: PageSegmentationMode) {
         bridge.setPageSegMode(mode.bridgeValue)
     }
     
+    /// Performs OCR on image data.
+    /// 
+    /// - Parameters:
+    ///   - imageData: Image data in raw pixel format.
+    ///   - width: Width of the image in pixels.
+    ///   - height: Height of the image in pixels.
+    ///   - bytesPerPixel: Number of bytes per pixel (default is 4 for RGBA).
+    ///   - bytesPerRow: Number of bytes per row. If nil, calculated as width * bytesPerPixel.
+    /// - Returns: The recognized text from the image.
+    /// - Throws: `TesseractError.initializationFailed` if engine not initialized.
+    ///   `TesseractError.recognitionFailed` if recognition fails.
     public func recognize(imageData: Data, width: Int, height: Int, bytesPerPixel: Int = 4, bytesPerRow: Int? = nil) throws -> String {
         guard isInitialized else {
             throw TesseractError.initializationFailed
@@ -142,10 +162,14 @@ public class TesseractEngine {
         return text
     }
     
+    /// Returns the confidence score of the last recognition operation.
+    /// 
+    /// - Returns: Confidence score as a percentage (0-100).
     public func confidence() -> Int {
-        return bridge.confidence()
+        bridge.confidence()
     }
     
+    /// Clears the current recognition results and prepares for a new image.
     public func clear() {
         bridge.clear()
     }
@@ -156,7 +180,7 @@ public class TesseractEngine {
     /// - Returns: Array of language codes found in the directory.
     /// - Note: Languages are identified by .traineddata files in the directory.
     public static func availableLanguages(at dataPath: String) -> [String] {
-        return TesseractBridge.availableLanguages(atPath: dataPath)
+        TesseractBridge.availableLanguages(atPath: dataPath)
     }
 }
 

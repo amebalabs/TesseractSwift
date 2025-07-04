@@ -224,7 +224,9 @@ public class LanguageDownloader {
             return
         }
         
-        let downloadURL = URL(string: baseURL + language.fileName)!
+        guard let downloadURL = URL(string: baseURL + language.fileName) else {
+            throw URLError(.badURL)
+        }
         
         let (tempURL, response) = try await session.download(from: downloadURL) { bytesWritten, totalBytes in
             if totalBytes > 0 {
@@ -304,7 +306,10 @@ public class LanguageDownloader {
     /// - Note: This method queries the GitHub API and may be rate-limited.
     ///         Use the static `allAvailableLanguages()` for offline access.
     public func fetchAvailableLanguagesFromGitHub() async throws -> [TesseractLanguage] {
-        var request = URLRequest(url: URL(string: githubAPIURL)!)
+        guard let githubURL = URL(string: githubAPIURL) else {
+            throw URLError(.badURL)
+        }
+        var request = URLRequest(url: githubURL)
         request.setValue("application/vnd.github.v3+json", forHTTPHeaderField: "Accept")
         
         let (data, response) = try await session.data(for: request)

@@ -2,12 +2,15 @@ import Foundation
 import CoreGraphics
 import CoreText
 
-// Example usage demonstrating TesseractSwift integration
+/// Example usage demonstrating TesseractSwift integration.
 public class TesseractExample {
     
+    /// Demonstrates basic usage of TesseractSwift with language download and OCR.
     public static func basicUsage() async throws {
         // 1. Set up tessdata directory
-        let documentsPath = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first!
+        guard let documentsPath = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first else {
+            throw TesseractError.dataPathNotFound
+        }
         let tessdataPath = documentsPath.appendingPathComponent("tessdata")
         
         // 2. Create engine
@@ -15,7 +18,9 @@ public class TesseractExample {
         
         // 3. Download language if needed
         let downloader = LanguageDownloader.shared
-        let englishLang = LanguageDownloader.commonLanguages.first { $0.code == "eng" }!
+        guard let englishLang = LanguageDownloader.commonLanguages.first(where: { $0.code == "eng" }) else {
+            throw TesseractError.languageNotAvailable
+        }
         
         if !downloader.isLanguageDownloaded(englishLang, in: tessdataPath) {
             print("Downloading English language data...")
@@ -36,7 +41,7 @@ public class TesseractExample {
         print("Confidence: \(engine.confidence())%")
     }
     
-    // Example: Multi-language support
+    /// Demonstrates multi-language support with multiple language downloads.
     public static func multiLanguageExample() async throws {
         let tessdataPath = FileManager.default.temporaryDirectory.appendingPathComponent("tessdata")
         let downloader = LanguageDownloader.shared
@@ -71,7 +76,7 @@ public class TesseractExample {
         }
     }
     
-    // Example: Different page segmentation modes
+    /// Demonstrates different page segmentation modes for various document types.
     public static func segmentationModesExample() throws {
         let engine = TesseractEngine(dataPath: "/path/to/tessdata")
         try engine.initialize()
@@ -104,11 +109,14 @@ public class TesseractExample {
             bytesPerRow: 0,
             space: CGColorSpaceCreateDeviceRGB(),
             bitmapInfo: CGImageAlphaInfo.premultipliedLast.rawValue
-        )!
+        )
+        guard let context = renderer else {
+            fatalError("Failed to create CGContext")
+        }
         
         // White background
-        renderer.setFillColor(CGColor(red: 1, green: 1, blue: 1, alpha: 1))
-        renderer.fill(CGRect(origin: .zero, size: size))
+        context.setFillColor(CGColor(red: 1, green: 1, blue: 1, alpha: 1))
+        context.fill(CGRect(origin: .zero, size: size))
         
         // Create text using Core Text (platform-agnostic)
         let fontSize: CGFloat = 36
@@ -119,12 +127,17 @@ public class TesseractExample {
             kCTForegroundColorAttributeName: CGColor(red: 0, green: 0, blue: 0, alpha: 1)
         ] as CFDictionary
         
-        let attributedString = CFAttributedStringCreate(nil, text as CFString, attributes)!
+        guard let attributedString = CFAttributedStringCreate(nil, text as CFString, attributes) else {
+            fatalError("Failed to create attributed string")
+        }
         let line = CTLineCreateWithAttributedString(attributedString)
         
-        renderer.textPosition = CGPoint(x: 20, y: 30)
-        CTLineDraw(line, renderer)
+        context.textPosition = CGPoint(x: 20, y: 30)
+        CTLineDraw(line, context)
         
-        return renderer.makeImage()!
+        guard let image = context.makeImage() else {
+            fatalError("Failed to create image from context")
+        }
+        return image
     }
 }
