@@ -6,7 +6,7 @@ let package = Package(
     name: "TesseractSwift",
     platforms: [
         .macOS(.v13),
-        .iOS(.v16),
+        .iOS(.v16)
     ],
     products: [
         .library(
@@ -23,11 +23,11 @@ let package = Package(
             publicHeadersPath: "include",
             cxxSettings: [
                 .headerSearchPath("include"),
-                .define("TESS_EXPORTS"),
+                .define("TESS_EXPORTS")
             ],
             linkerSettings: [
                 .linkedLibrary("curl"),
-                .linkedLibrary("z"),
+                .linkedLibrary("z")
             ]
         ),
         .target(
@@ -49,7 +49,7 @@ let package = Package(
             resources: [
                 .process("Resources")
             ]
-        ),
+        )
     ],
     cxxLanguageStandard: .cxx17
 )
