@@ -1,6 +1,4 @@
 ![logo](https://github.com/user-attachments/assets/e0e2065c-2b54-44c3-99dc-22bd598f7c62)
-# TesseractSwift
-
 [![Swift](https://img.shields.io/badge/Swift-5.9-orange.svg)](https://swift.org)
 [![Platforms](https://img.shields.io/badge/Platforms-iOS%2016%2B%20%7C%20macOS%2013%2B-blue.svg)](https://swift.org)
 [![Swift Package Manager](https://img.shields.io/badge/SPM-compatible-brightgreen.svg)](https://swift.org/package-manager)
