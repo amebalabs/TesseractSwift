@@ -1,3 +1,4 @@
+![logo](https://github.com/user-attachments/assets/e0e2065c-2b54-44c3-99dc-22bd598f7c62)
 # TesseractSwift
 
 [![Swift](https://img.shields.io/badge/Swift-5.9-orange.svg)](https://swift.org)
@@ -6,6 +7,7 @@
 [![License](https://img.shields.io/badge/License-MIT-lightgrey.svg)](https://github.com/amebalabs/TesseractSwift/blob/main/LICENSE)
 
 A modern Swift wrapper for Tesseract OCR, providing a clean API for text recognition in iOS and macOS applications.
+
 
 ## Features
 
