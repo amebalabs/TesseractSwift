@@ -33,21 +33,23 @@ create_xcframework() {
     rm -rf "$TEMP_DIR"
     mkdir -p "$TEMP_DIR"
     
-    # Create framework structure
+    # Create framework structure using the versioned layout expected on macOS
     local FRAMEWORK_DIR="$TEMP_DIR/$NAME.framework"
-    mkdir -p "$FRAMEWORK_DIR/Headers"
-    mkdir -p "$FRAMEWORK_DIR/Modules"
+    local VERSION_DIR="$FRAMEWORK_DIR/Versions/A"
+    mkdir -p "$VERSION_DIR/Headers"
+    mkdir -p "$VERSION_DIR/Modules"
+    mkdir -p "$VERSION_DIR/Resources"
     
     # Copy library
-    cp "$LIBS_DIR/lib/$LIB_NAME" "$FRAMEWORK_DIR/$NAME"
+    cp "$LIBS_DIR/lib/$LIB_NAME" "$VERSION_DIR/$NAME"
     
     # Copy headers with proper structure
     if [ "$NAME" == "Leptonica" ]; then
         # For Leptonica, copy directly
-        cp -r "$LIBS_DIR/include/leptonica/"* "$FRAMEWORK_DIR/Headers/"
+        cp -r "$LIBS_DIR/include/leptonica/"* "$VERSION_DIR/Headers/"
         
         # Create umbrella header
-        cat > "$FRAMEWORK_DIR/Headers/$NAME.h" << 'EOF'
+        cat > "$VERSION_DIR/Headers/$NAME.h" << 'EOF'
 #ifndef LEPTONICA_H
 #define LEPTONICA_H
 
@@ -57,14 +59,14 @@ create_xcframework() {
 EOF
     elif [ "$NAME" == "TesseractCore" ]; then
         # For Tesseract, maintain the tesseract/ subdirectory structure
-        mkdir -p "$FRAMEWORK_DIR/Headers/tesseract"
-        cp -r "$LIBS_DIR/include/tesseract/"* "$FRAMEWORK_DIR/Headers/tesseract/"
+        mkdir -p "$VERSION_DIR/Headers/tesseract"
+        cp -r "$LIBS_DIR/include/tesseract/"* "$VERSION_DIR/Headers/tesseract/"
         
         # Also copy to root for backward compatibility
-        cp -r "$LIBS_DIR/include/tesseract/"* "$FRAMEWORK_DIR/Headers/"
+        cp -r "$LIBS_DIR/include/tesseract/"* "$VERSION_DIR/Headers/"
         
         # Create umbrella header
-        cat > "$FRAMEWORK_DIR/Headers/$NAME.h" << 'EOF'
+        cat > "$VERSION_DIR/Headers/$NAME.h" << 'EOF'
 #ifndef TESSERACTCORE_H
 #define TESSERACTCORE_H
 
@@ -91,7 +93,7 @@ EOF
     
     # Create module map
     if [ "$NAME" == "Leptonica" ]; then
-        cat > "$FRAMEWORK_DIR/Modules/module.modulemap" << EOF
+        cat > "$VERSION_DIR/Modules/module.modulemap" << EOF
 framework module $NAME {
     umbrella header "$NAME.h"
     export *
@@ -101,7 +103,7 @@ framework module $NAME {
 }
 EOF
     elif [ "$NAME" == "TesseractCore" ]; then
-        cat > "$FRAMEWORK_DIR/Modules/module.modulemap" << EOF
+        cat > "$VERSION_DIR/Modules/module.modulemap" << EOF
 framework module $NAME {
     umbrella header "$NAME.h"
     
@@ -121,7 +123,7 @@ EOF
     fi
     
     # Create Info.plist
-    cat > "$FRAMEWORK_DIR/Info.plist" << EOF
+    cat > "$VERSION_DIR/Resources/Info.plist" << EOF
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
@@ -149,6 +151,14 @@ EOF
 EOF
     
     # Create XCFramework
+    # Set up symlinks for the versioned framework layout
+    ln -sfn "A" "$FRAMEWORK_DIR/Versions/Current"
+    ln -sfn "Versions/Current/Headers" "$FRAMEWORK_DIR/Headers"
+    ln -sfn "Versions/Current/Modules" "$FRAMEWORK_DIR/Modules"
+    ln -sfn "Versions/Current/Resources" "$FRAMEWORK_DIR/Resources"
+    ln -sfn "Versions/Current/$NAME" "$FRAMEWORK_DIR/$NAME"
+    ln -sfn "Versions/Current/Resources/Info.plist" "$FRAMEWORK_DIR/Info.plist"
+
     xcodebuild -create-xcframework \
         -framework "$FRAMEWORK_DIR" \
         -output "$OUTPUT_DIR/$NAME.xcframework"
@@ -162,5 +172,8 @@ EOF
 # Create XCFrameworks
 create_xcframework "Leptonica" "libleptonica.a"
 create_xcframework "TesseractCore" "libtesseract.a"
+
+# Normalize header includes for compatibility with Clang include search rules
+"$PROJECT_ROOT/Scripts/patch-headers.sh"
 
 echo -e "${GREEN}XCFrameworks created successfully!${NC}"

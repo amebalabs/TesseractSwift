@@ -6,7 +6,7 @@
 	<array>
 		<dict>
 			<key>BinaryPath</key>
-			<string>Leptonica.framework/Leptonica</string>
+			<string>Leptonica.framework/Versions/A/Leptonica</string>
 			<key>LibraryIdentifier</key>
 			<string>macos-arm64</string>
 			<key>LibraryPath</key>
