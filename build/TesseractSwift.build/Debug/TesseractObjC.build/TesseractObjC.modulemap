@@ -1,0 +1,4 @@
+module TesseractObjC {
+umbrella "/Users/alex/Developer/github.com/amebalabs/TesseractSwift/Sources/TesseractObjC/include"
+export *
+}

@@ -1,0 +1,4 @@
+module TesseractSwift {
+header "TesseractSwift-Swift.h"
+export *
+}

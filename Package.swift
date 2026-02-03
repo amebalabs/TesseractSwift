@@ -1,7 +1,5 @@
 // swift-tools-version: 5.9
-// Note: This package currently only supports ARM64 (Apple Silicon) architecture.
-// The binary XCFrameworks (TesseractCore, Leptonica) need to be rebuilt with
-// x86_64 slices to support Intel Macs.
+// Bundles prebuilt XCFrameworks (TesseractCore, Leptonica) for macOS arm64 and x86_64.
 
 import PackageDescription
 
@@ -23,10 +21,14 @@ let package = Package(
             name: "TesseractObjC",
             dependencies: ["TesseractCore", "Leptonica"],
             path: "Sources/TesseractObjC",
+            sources: [
+                "TesseractBridge.mm"
+            ],
             publicHeadersPath: "include",
             cxxSettings: [
                 .headerSearchPath("include"),
-                .define("TESS_EXPORTS")
+                .define("TESS_EXPORTS"),
+                .unsafeFlags(["-fno-common"])
             ],
             linkerSettings: [
                 .linkedLibrary("curl"),

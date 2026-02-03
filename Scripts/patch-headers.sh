@@ -6,9 +6,16 @@ set -e
 
 SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 PROJECT_ROOT="$( cd "$SCRIPT_DIR/.." && pwd )"
-FRAMEWORK_DIR="$PROJECT_ROOT/Binaries/TesseractCore.xcframework/macos-arm64/TesseractCore.framework/Headers"
+
+# Find the Headers folder inside the XCFramework regardless of architecture naming
+FRAMEWORK_DIR="$(find "$PROJECT_ROOT/Binaries/TesseractCore.xcframework" -path "*/TesseractCore.framework/Headers" -print -quit)"
 
 echo "Patching TesseractCore headers to use quoted includes..."
+
+if [ -z "$FRAMEWORK_DIR" ] || [ ! -d "$FRAMEWORK_DIR" ]; then
+    echo "Could not find TesseractCore headers directory; skipping patch."
+    exit 0
+fi
 
 # Patch baseapi.h
 if [ -f "$FRAMEWORK_DIR/baseapi.h" ]; then

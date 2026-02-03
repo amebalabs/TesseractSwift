@@ -1,0 +1,39 @@
+{
+  "" : {
+    "diagnostics" : "/Users/alex/Developer/github.com/amebalabs/TesseractSwift/build/TesseractSwift.build/Debug/TesseractSwift.build/Objects-normal/x86_64/TesseractSwift-primary.dia",
+    "emit-module-dependencies" : "/Users/alex/Developer/github.com/amebalabs/TesseractSwift/build/TesseractSwift.build/Debug/TesseractSwift.build/Objects-normal/x86_64/TesseractSwift-primary-emit-module.d",
+    "emit-module-diagnostics" : "/Users/alex/Developer/github.com/amebalabs/TesseractSwift/build/TesseractSwift.build/Debug/TesseractSwift.build/Objects-normal/x86_64/TesseractSwift-primary-emit-module.dia",
+    "pch" : "/Users/alex/Developer/github.com/amebalabs/TesseractSwift/build/TesseractSwift.build/Debug/TesseractSwift.build/Objects-normal/x86_64/TesseractSwift-primary-Bridging-header.pch",
+    "swift-dependencies" : "/Users/alex/Developer/github.com/amebalabs/TesseractSwift/build/TesseractSwift.build/Debug/TesseractSwift.build/Objects-normal/x86_64/TesseractSwift-primary.swiftdeps"
+  },
+  "/Users/alex/Developer/github.com/amebalabs/TesseractSwift/Sources/TesseractSwift/Example.swift" : {
+    "const-values" : "/Users/alex/Developer/github.com/amebalabs/TesseractSwift/build/TesseractSwift.build/Debug/TesseractSwift.build/Objects-normal/x86_64/Example.swiftconstvalues",
+    "dependencies" : "/Users/alex/Developer/github.com/amebalabs/TesseractSwift/build/TesseractSwift.build/Debug/TesseractSwift.build/Objects-normal/x86_64/Example.d",
+    "diagnostics" : "/Users/alex/Developer/github.com/amebalabs/TesseractSwift/build/TesseractSwift.build/Debug/TesseractSwift.build/Objects-normal/x86_64/Example.dia",
+    "index-unit-output-path" : "/TesseractSwift.build/Debug/TesseractSwift.build/Objects-normal/x86_64/Example.o",
+    "llvm-bc" : "/Users/alex/Developer/github.com/amebalabs/TesseractSwift/build/TesseractSwift.build/Debug/TesseractSwift.build/Objects-normal/x86_64/Example.bc",
+    "object" : "/Users/alex/Developer/github.com/amebalabs/TesseractSwift/build/TesseractSwift.build/Debug/TesseractSwift.build/Objects-normal/x86_64/Example.o",
+    "swift-dependencies" : "/Users/alex/Developer/github.com/amebalabs/TesseractSwift/build/TesseractSwift.build/Debug/TesseractSwift.build/Objects-normal/x86_64/Example.swiftdeps",
+    "swiftmodule" : "/Users/alex/Developer/github.com/amebalabs/TesseractSwift/build/TesseractSwift.build/Debug/TesseractSwift.build/Objects-normal/x86_64/Example~partial.swiftmodule"
+  },
+  "/Users/alex/Developer/github.com/amebalabs/TesseractSwift/Sources/TesseractSwift/LanguageDownloader.swift" : {
+    "const-values" : "/Users/alex/Developer/github.com/amebalabs/TesseractSwift/build/TesseractSwift.build/Debug/TesseractSwift.build/Objects-normal/x86_64/LanguageDownloader.swiftconstvalues",
+    "dependencies" : "/Users/alex/Developer/github.com/amebalabs/TesseractSwift/build/TesseractSwift.build/Debug/TesseractSwift.build/Objects-normal/x86_64/LanguageDownloader.d",
+    "diagnostics" : "/Users/alex/Developer/github.com/amebalabs/TesseractSwift/build/TesseractSwift.build/Debug/TesseractSwift.build/Objects-normal/x86_64/LanguageDownloader.dia",
+    "index-unit-output-path" : "/TesseractSwift.build/Debug/TesseractSwift.build/Objects-normal/x86_64/LanguageDownloader.o",
+    "llvm-bc" : "/Users/alex/Developer/github.com/amebalabs/TesseractSwift/build/TesseractSwift.build/Debug/TesseractSwift.build/Objects-normal/x86_64/LanguageDownloader.bc",
+    "object" : "/Users/alex/Developer/github.com/amebalabs/TesseractSwift/build/TesseractSwift.build/Debug/TesseractSwift.build/Objects-normal/x86_64/LanguageDownloader.o",
+    "swift-dependencies" : "/Users/alex/Developer/github.com/amebalabs/TesseractSwift/build/TesseractSwift.build/Debug/TesseractSwift.build/Objects-normal/x86_64/LanguageDownloader.swiftdeps",
+    "swiftmodule" : "/Users/alex/Developer/github.com/amebalabs/TesseractSwift/build/TesseractSwift.build/Debug/TesseractSwift.build/Objects-normal/x86_64/LanguageDownloader~partial.swiftmodule"
+  },
+  "/Users/alex/Developer/github.com/amebalabs/TesseractSwift/Sources/TesseractSwift/TesseractEngine.swift" : {
+    "const-values" : "/Users/alex/Developer/github.com/amebalabs/TesseractSwift/build/TesseractSwift.build/Debug/TesseractSwift.build/Objects-normal/x86_64/TesseractEngine.swiftconstvalues",
+    "dependencies" : "/Users/alex/Developer/github.com/amebalabs/TesseractSwift/build/TesseractSwift.build/Debug/TesseractSwift.build/Objects-normal/x86_64/TesseractEngine.d",
+    "diagnostics" : "/Users/alex/Developer/github.com/amebalabs/TesseractSwift/build/TesseractSwift.build/Debug/TesseractSwift.build/Objects-normal/x86_64/TesseractEngine.dia",
+    "index-unit-output-path" : "/TesseractSwift.build/Debug/TesseractSwift.build/Objects-normal/x86_64/TesseractEngine.o",
+    "llvm-bc" : "/Users/alex/Developer/github.com/amebalabs/TesseractSwift/build/TesseractSwift.build/Debug/TesseractSwift.build/Objects-normal/x86_64/TesseractEngine.bc",
+    "object" : "/Users/alex/Developer/github.com/amebalabs/TesseractSwift/build/TesseractSwift.build/Debug/TesseractSwift.build/Objects-normal/x86_64/TesseractEngine.o",
+    "swift-dependencies" : "/Users/alex/Developer/github.com/amebalabs/TesseractSwift/build/TesseractSwift.build/Debug/TesseractSwift.build/Objects-normal/x86_64/TesseractEngine.swiftdeps",
+    "swiftmodule" : "/Users/alex/Developer/github.com/amebalabs/TesseractSwift/build/TesseractSwift.build/Debug/TesseractSwift.build/Objects-normal/x86_64/TesseractEngine~partial.swiftmodule"
+  }
+}

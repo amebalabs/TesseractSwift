@@ -19,9 +19,8 @@ A modern Swift wrapper for Tesseract OCR, providing a clean API for text recogni
 
 ## Requirements
 
-- **macOS**: Apple Silicon (ARM64) Macs only
+- **macOS**: Apple Silicon (arm64) and Intel (x86_64) Macs
 - **iOS**: Currently not supported (XCFrameworks need iOS slices)
-- **Architecture**: ARM64 only (Intel x86_64 not supported)
 
 ## Installation
 
