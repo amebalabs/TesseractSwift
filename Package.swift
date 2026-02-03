@@ -27,8 +27,7 @@ let package = Package(
             publicHeadersPath: "include",
             cxxSettings: [
                 .headerSearchPath("include"),
-                .define("TESS_EXPORTS"),
-                .unsafeFlags(["-fno-common"])
+                .define("TESS_EXPORTS")
             ],
             linkerSettings: [
                 .linkedLibrary("curl"),
