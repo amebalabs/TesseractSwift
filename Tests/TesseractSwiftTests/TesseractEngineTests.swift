@@ -119,6 +119,27 @@ final class TesseractEngineTests: XCTestCase {
                       "Expected recognized text to contain the rendered words, got '\(recognizedText)'")
     }
     
+    func testConfidenceIsZeroForBlankImage() async throws {
+        // Skip if we can't download language data
+        let downloader = LanguageDownloader.shared
+        let englishLang = TesseractLanguage(code: "eng", name: "English", script: "Latin", fileSize: nil)
+        
+        do {
+            try await downloader.downloadLanguage(englishLang, to: testDataPath)
+            try engine.initialize(language: "eng")
+        } catch {
+            throw XCTSkip("Could not download language data: \(error)")
+        }
+        
+        let blankImage = createTestImage(text: "")
+        let recognizedText = try engine.recognize(cgImage: blankImage)
+        
+        XCTAssertTrue(recognizedText.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty,
+                      "Expected no text from a blank image, got '\(recognizedText)'")
+        XCTAssertEqual(engine.confidence(), 0,
+                       "Expected zero confidence when no words were recognized")
+    }
+    
     func testPageSegmentationModes() throws {
         // Test setting different page segmentation modes
         engine.setPageSegmentationMode(.auto)
