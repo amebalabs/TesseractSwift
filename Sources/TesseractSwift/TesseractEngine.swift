@@ -206,13 +206,16 @@ extension TesseractEngine {
         guard let imageData = cgImage.pixelData() else {
             throw TesseractError.imageProcessingFailed
         }
-        
+
+        // pixelData() renders into a packed buffer, so the stride handed to
+        // Tesseract is width * 4 — not the source image's bytesPerRow, which
+        // may include row padding.
         return try recognize(
             imageData: imageData,
             width: cgImage.width,
             height: cgImage.height,
             bytesPerPixel: 4,
-            bytesPerRow: cgImage.bytesPerRow
+            bytesPerRow: cgImage.width * 4
         )
     }
 }
