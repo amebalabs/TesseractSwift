@@ -84,6 +84,13 @@
         return 0;
     }
     
+    // MeanTextConf() can report a misleadingly high value when recognition
+    // produced no text, so an empty result carries zero confidence.
+    std::unique_ptr<char[]> text(_tesseract->GetUTF8Text());
+    if (!text || std::string(text.get()).find_first_not_of(" \t\n\r\f\v") == std::string::npos) {
+        return 0;
+    }
+    
     return _tesseract->MeanTextConf();
 }
 
