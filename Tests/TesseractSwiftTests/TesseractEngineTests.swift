@@ -91,6 +91,34 @@ final class TesseractEngineTests: XCTestCase {
         }
     }
     
+    func testTextRecognitionWithPaddedRows() async throws {
+        // Skip if we can't download language data
+        let downloader = LanguageDownloader.shared
+        let englishLang = TesseractLanguage(code: "eng", name: "English", script: "Latin", fileSize: nil)
+        
+        do {
+            try await downloader.downloadLanguage(englishLang, to: testDataPath)
+            try engine.initialize(language: "eng")
+        } catch {
+            throw XCTSkip("Could not download language data: \(error)")
+        }
+        
+        // Decoded screenshots commonly carry row padding, so bytesPerRow is
+        // larger than width * 4. Recognition must honor the packed buffer
+        // stride rather than the source image's bytesPerRow.
+        let testImage = createTestImage(text: "Hello World", rowPadding: 32)
+        XCTAssertGreaterThan(testImage.bytesPerRow, testImage.width * 4,
+                             "Test image must have padded rows to exercise stride handling")
+        
+        let recognizedText = try engine.recognize(cgImage: testImage)
+        print("Recognized text (padded rows): '\(recognizedText)'")
+        print("Confidence: \(engine.confidence())")
+        
+        let lowercased = recognizedText.lowercased()
+        XCTAssertTrue(lowercased.contains("hello") || lowercased.contains("world"),
+                      "Expected recognized text to contain the rendered words, got '\(recognizedText)'")
+    }
+    
     func testPageSegmentationModes() throws {
         // Test setting different page segmentation modes
         engine.setPageSegmentationMode(.auto)
@@ -100,17 +128,19 @@ final class TesseractEngineTests: XCTestCase {
     }
     
     // Helper function to create a test image
-    private func createTestImage(text: String) -> CGImage {
+    // rowPadding adds extra bytes per row so bytesPerRow exceeds width * 4.
+    private func createTestImage(text: String, rowPadding: Int = 0) -> CGImage {
         // Larger size for better recognition
         let size = CGSize(width: 400, height: 100)
         let scale: CGFloat = 2.0 // Higher resolution
         
+        let pixelWidth = Int(size.width * scale)
         let renderer = CGContext(
             data: nil,
-            width: Int(size.width * scale),
+            width: pixelWidth,
             height: Int(size.height * scale),
             bitsPerComponent: 8,
-            bytesPerRow: 0,
+            bytesPerRow: rowPadding > 0 ? pixelWidth * 4 + rowPadding : 0,
             space: CGColorSpaceCreateDeviceRGB(),
             bitmapInfo: CGImageAlphaInfo.premultipliedLast.rawValue
         )!
