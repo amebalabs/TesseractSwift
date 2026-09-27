@@ -6,27 +6,27 @@ import CoreText
 final class TesseractEngineTests: XCTestCase {
     var engine: TesseractEngine!
     var testDataPath: URL!
-    
+
     override func setUpWithError() throws {
         // Create temporary test data directory
         let tempDir = FileManager.default.temporaryDirectory
         testDataPath = tempDir.appendingPathComponent("tessdata")
         try FileManager.default.createDirectory(at: testDataPath, withIntermediateDirectories: true)
-        
+
         // Initialize engine
         engine = TesseractEngine(dataPath: testDataPath.path)
     }
-    
+
     override func tearDownWithError() throws {
         // Clean up
         try? FileManager.default.removeItem(at: testDataPath)
     }
-    
+
     func testInitialization() async throws {
         // Download English language data for testing
         let downloader = LanguageDownloader.shared
         let englishLang = TesseractLanguage(code: "eng", name: "English", script: "Latin", fileSize: nil)
-        
+
         do {
             try await downloader.downloadLanguage(englishLang, to: testDataPath)
             try engine.initialize(language: "eng")
@@ -35,12 +35,12 @@ final class TesseractEngineTests: XCTestCase {
             throw XCTSkip("Could not download language data: \(error)")
         }
     }
-    
+
     func testAvailableLanguages() async throws {
         // Download a language first
         let downloader = LanguageDownloader.shared
         let englishLang = TesseractLanguage(code: "eng", name: "English", script: "Latin", fileSize: nil)
-        
+
         do {
             try await downloader.downloadLanguage(englishLang, to: testDataPath)
             let languages = TesseractEngine.availableLanguages(at: testDataPath.path)
@@ -49,33 +49,33 @@ final class TesseractEngineTests: XCTestCase {
             throw XCTSkip("Could not download language data: \(error)")
         }
     }
-    
+
     func testTextRecognition() async throws {
         // Skip if we can't download language data
         let downloader = LanguageDownloader.shared
         let englishLang = TesseractLanguage(code: "eng", name: "English", script: "Latin", fileSize: nil)
-        
+
         do {
             try await downloader.downloadLanguage(englishLang, to: testDataPath)
             try engine.initialize(language: "eng")
         } catch {
             throw XCTSkip("Could not download language data: \(error)")
         }
-        
+
         // Create a simple test image with text
         let testImage = createTestImage(text: "Hello World")
-        
+
         do {
             let recognizedText = try engine.recognize(cgImage: testImage)
-            
+
             // Print for debugging in CI
             print("Recognized text: '\(recognizedText)'")
             print("Confidence: \(engine.confidence())")
-            
+
             // More lenient check - just verify we got some text
-            XCTAssertFalse(recognizedText.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty, 
+            XCTAssertFalse(recognizedText.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty,
                           "Expected non-empty text recognition result")
-            
+
             // For CI environments where font rendering might differ,
             // we'll skip the exact text match and just ensure we got something
             if recognizedText.lowercased().contains("hello") || recognizedText.lowercased().contains("world") {
@@ -85,61 +85,61 @@ final class TesseractEngineTests: XCTestCase {
                 // We got some text, even if not exactly what we expected
                 print("Warning: Recognized text '\(recognizedText)' doesn't contain expected words, but test will pass")
             }
-            
+
         } catch {
             XCTFail("Recognition failed: \(error)")
         }
     }
-    
+
     func testTextRecognitionWithPaddedRows() async throws {
         // Skip if we can't download language data
         let downloader = LanguageDownloader.shared
         let englishLang = TesseractLanguage(code: "eng", name: "English", script: "Latin", fileSize: nil)
-        
+
         do {
             try await downloader.downloadLanguage(englishLang, to: testDataPath)
             try engine.initialize(language: "eng")
         } catch {
             throw XCTSkip("Could not download language data: \(error)")
         }
-        
+
         // Decoded screenshots commonly carry row padding, so bytesPerRow is
         // larger than width * 4. Recognition must honor the packed buffer
         // stride rather than the source image's bytesPerRow.
         let testImage = createTestImage(text: "Hello World", rowPadding: 32)
         XCTAssertGreaterThan(testImage.bytesPerRow, testImage.width * 4,
                              "Test image must have padded rows to exercise stride handling")
-        
+
         let recognizedText = try engine.recognize(cgImage: testImage)
         print("Recognized text (padded rows): '\(recognizedText)'")
         print("Confidence: \(engine.confidence())")
-        
+
         let lowercased = recognizedText.lowercased()
         XCTAssertTrue(lowercased.contains("hello") || lowercased.contains("world"),
                       "Expected recognized text to contain the rendered words, got '\(recognizedText)'")
     }
-    
+
     func testConfidenceIsZeroForBlankImage() async throws {
         // Skip if we can't download language data
         let downloader = LanguageDownloader.shared
         let englishLang = TesseractLanguage(code: "eng", name: "English", script: "Latin", fileSize: nil)
-        
+
         do {
             try await downloader.downloadLanguage(englishLang, to: testDataPath)
             try engine.initialize(language: "eng")
         } catch {
             throw XCTSkip("Could not download language data: \(error)")
         }
-        
+
         let blankImage = createTestImage(text: "")
         let recognizedText = try engine.recognize(cgImage: blankImage)
-        
+
         XCTAssertTrue(recognizedText.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty,
                       "Expected no text from a blank image, got '\(recognizedText)'")
         XCTAssertEqual(engine.confidence(), 0,
                        "Expected zero confidence when no words were recognized")
     }
-    
+
     func testPageSegmentationModes() throws {
         // Test setting different page segmentation modes
         engine.setPageSegmentationMode(.auto)
@@ -147,14 +147,14 @@ final class TesseractEngineTests: XCTestCase {
         engine.setPageSegmentationMode(.singleBlock)
         // No assertion needed - just verify no crash
     }
-    
+
     // Helper function to create a test image
     // rowPadding adds extra bytes per row so bytesPerRow exceeds width * 4.
     private func createTestImage(text: String, rowPadding: Int = 0) -> CGImage {
         // Larger size for better recognition
         let size = CGSize(width: 400, height: 100)
         let scale: CGFloat = 2.0 // Higher resolution
-        
+
         let pixelWidth = Int(size.width * scale)
         let renderer = CGContext(
             data: nil,
@@ -165,32 +165,32 @@ final class TesseractEngineTests: XCTestCase {
             space: CGColorSpaceCreateDeviceRGB(),
             bitmapInfo: CGImageAlphaInfo.premultipliedLast.rawValue
         )!
-        
+
         // Scale the context for high DPI
         renderer.scaleBy(x: scale, y: scale)
-        
+
         // White background
         renderer.setFillColor(CGColor(red: 1, green: 1, blue: 1, alpha: 1))
         renderer.fill(CGRect(origin: .zero, size: size))
-        
+
         // Black text using Core Text
         let font = CTFontCreateWithName("Helvetica-Bold" as CFString, 36, nil)
         let attributes = [
             kCTFontAttributeName: font,
             kCTForegroundColorAttributeName: CGColor(red: 0, green: 0, blue: 0, alpha: 1)
         ] as CFDictionary
-        
+
         let attributedString = CFAttributedStringCreate(nil, text as CFString, attributes)!
         let line = CTLineCreateWithAttributedString(attributedString)
-        
+
         // Center the text better
         let textBounds = CTLineGetBoundsWithOptions(line, .useOpticalBounds)
         let xOffset = (size.width - textBounds.width) / 2
         let yOffset = (size.height - textBounds.height) / 2
-        
+
         renderer.textPosition = CGPoint(x: xOffset, y: yOffset)
         CTLineDraw(line, renderer)
-        
+
         return renderer.makeImage()!
     }
 }
@@ -198,25 +198,25 @@ final class TesseractEngineTests: XCTestCase {
 final class LanguageDownloaderTests: XCTestCase {
     var downloader: LanguageDownloader!
     var testDirectory: URL!
-    
+
     override func setUpWithError() throws {
         downloader = LanguageDownloader.shared
         testDirectory = FileManager.default.temporaryDirectory.appendingPathComponent("test_tessdata")
         try FileManager.default.createDirectory(at: testDirectory, withIntermediateDirectories: true)
     }
-    
+
     override func tearDownWithError() throws {
         try? FileManager.default.removeItem(at: testDirectory)
     }
-    
+
     func testCommonLanguagesAvailable() {
         XCTAssertFalse(LanguageDownloader.commonLanguages.isEmpty)
         XCTAssertTrue(LanguageDownloader.commonLanguages.contains { $0.code == "eng" })
     }
-    
+
     func testLanguageDownloadAndDelete() async throws {
         let language = TesseractLanguage(code: "eng", name: "English", script: "Latin", fileSize: nil)
-        
+
         // Download
         do {
             try await downloader.downloadLanguage(language, to: testDirectory)
@@ -224,15 +224,15 @@ final class LanguageDownloaderTests: XCTestCase {
         } catch {
             throw XCTSkip("Could not download language data: \(error)")
         }
-        
+
         // Delete
         try downloader.deleteLanguage(language, from: testDirectory)
         XCTAssertFalse(downloader.isLanguageDownloaded(language, in: testDirectory))
     }
-    
+
     func testDownloadedLanguagesList() async throws {
         let language = TesseractLanguage(code: "eng", name: "English", script: "Latin", fileSize: nil)
-        
+
         do {
             try await downloader.downloadLanguage(language, to: testDirectory)
             let downloaded = downloader.downloadedLanguages(in: testDirectory)
